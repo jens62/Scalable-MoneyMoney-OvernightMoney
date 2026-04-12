@@ -1,5 +1,7 @@
 # Scalable Capital Overnight Money Extension for MoneyMoney
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A [MoneyMoney](https://moneymoney-app.com) extension that retrieves the balance and transaction history of your **Scalable Capital overnight money account** (Tagesgeld).
 
 ## Requirements
