@@ -32,6 +32,21 @@ No restart is required; the extension loads automatically.
 - **Separate 2FA per refresh:** This extension cannot share the authentication session with Scalable Capital's clearing or broker account. Each refresh triggers its own 2FA confirmation in the Scalable Capital app. This is a fundamental limitation of MoneyMoney's Lua extension model — the required HttpOnly session cookie is not accessible from Lua extensions.
 - Transactions are fetched in full (up to 500 entries) and filtered locally by MoneyMoney's "since" date.
 
+## CLI Balance Checker (Python)
+
+`scalable_capital_balance.py` is a standalone script for quickly checking your Scalable Capital balance from the terminal. It uses Playwright to drive a headless Chromium browser through the full login flow (including mobile 2FA approval) and prints your overnight money balance, interest rate, and broker IBAN.
+
+**Install dependencies:**
+```bash
+pip install -r requirements.txt
+playwright install chromium
+```
+
+**Run:**
+```bash
+python scalable_capital_balance.py
+```
+
 ## Version
 
 Current version: **1.09**
