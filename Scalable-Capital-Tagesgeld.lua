@@ -79,7 +79,7 @@
 -- ---------------------------------------------------------------------------
 
 WebBanking{
-  version     = 1.09,
+  version     = 1.10,
   url         = "https://de.scalable.capital",
   services    = {"Scalable Capital Tagesgeld"},
   description = string.format(MM.localizeText("Get balance and transactions from %s."), "Scalable Capital Tagesgeld"),
@@ -199,24 +199,33 @@ function InitializeSession(protocol, bank, username, username2, password, intera
     return LoginFailed
   end
 
-  -- Schritt 4: mfa-check Seite laden -> userId aus __NEXT_DATA__ extrahieren
+  -- Schritt 4: mfa-check Seite laden -> userId extrahieren
+  -- Scalable nutzt Next.js App Router (seit ~05/2026): kein __NEXT_DATA__ mehr.
+  -- Die userId erscheint im RSC-Streaming-Format als escaped JSON innerhalb eines
+  -- <script>-Tags: \"userId\":\"o2So6X16...\" (Backslash-Quote statt reiner Quote).
   local mfaHtml = connection:request("GET", AUTH_BASE .. "/mfa-check", nil, nil)
 
   userId = nil
-  local nextDataJson = mfaHtml:match(
-    "<script id=\"__NEXT_DATA__\" type=\"application/json\">({.+})</script>")
 
-  if nextDataJson then
-    local ok, nd = pcall(function()
-      return JSON(nextDataJson):dictionary()
-    end)
-    if ok and nd and nd["props"] and nd["props"]["pageProps"] then
-      userId = nd["props"]["pageProps"]["userId"]
+  -- Versuch 1: App Router RSC Format – escaped Quotes: \"userId\":\"...\"
+  userId = mfaHtml:match("\\\"userId\\\":%s*\\\"([^\\\"]+)\\\"")
+
+  if not userId then
+    -- Versuch 2: Legacy __NEXT_DATA__ (Pages Router, fuer den Fall eines Rollbacks)
+    local nextDataJson = mfaHtml:match(
+      "<script id=\"__NEXT_DATA__\" type=\"application/json\">({.+})</script>")
+    if nextDataJson then
+      local ok, nd = pcall(function()
+        return JSON(nextDataJson):dictionary()
+      end)
+      if ok and nd and nd["props"] and nd["props"]["pageProps"] then
+        userId = nd["props"]["pageProps"]["userId"]
+      end
     end
   end
 
   if not userId then
-    -- Fallback-Regex falls JSON-Parsing fehlschlaegt
+    -- Versuch 3: Unescaped Fallback (z.B. server-side rendered plain JSON)
     userId = mfaHtml:match("\"userId\"%s*:%s*\"([^\"]+)\"")
   end
 
