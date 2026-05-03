@@ -79,7 +79,7 @@
 -- ---------------------------------------------------------------------------
 
 WebBanking{
-  version     = 1.10,
+  version     = 1.11,
   url         = "https://de.scalable.capital",
   services    = {"Scalable Capital Tagesgeld"},
   description = string.format(MM.localizeText("Get balance and transactions from %s."), "Scalable Capital Tagesgeld"),

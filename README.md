@@ -49,4 +49,4 @@ python scalable_capital_balance.py
 
 ## Version
 
-Current version: **1.10**
+Current version: **1.11**
