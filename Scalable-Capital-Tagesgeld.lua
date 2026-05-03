@@ -462,6 +462,7 @@ function RefreshAccount(account, since)
         CASH_TRANSFER_OUT = "Auszahlung",
         DEPOSIT           = "Einzahlung",
         WITHDRAWAL        = "Auszahlung",
+        TAX               = "Steuern",
       }
 
       for _, tx in ipairs(txList) do
