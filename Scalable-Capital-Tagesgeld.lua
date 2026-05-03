@@ -482,7 +482,8 @@ function RefreshAccount(account, since)
           or cashType == "DEPOSIT" then
             txType = BookingTypeCredit
           elseif cashType == "CASH_TRANSFER_OUT"
-              or cashType == "WITHDRAWAL" then
+              or cashType == "WITHDRAWAL"
+              or cashType == "TAX" then
             txType = BookingTypeDebit
             if amount > 0 then amount = -amount end
           elseif amount >= 0 then
